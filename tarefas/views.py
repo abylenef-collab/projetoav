@@ -1,4 +1,10 @@
-from django.http import HttpResponse
+from django.shortcuts import render
 
 def index(request):
-    return HttpResponse("<h1>Sistema de Gerenciamento de Tarefas</h1>")
+    return render(request, 'tarefas/tarefas.html')
+
+def listar_tarefa(request):
+    return render(request, "tarefas/listar_tarefas.html") 
+
+def criar_tarefa(request):
+    return render(request, 'tarefas/criar_tarefa.html')

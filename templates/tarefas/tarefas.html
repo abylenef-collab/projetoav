@@ -1,0 +1,159 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Gerenciador de Tarefas</title>
+
+    <!-- Bootstrap CSS via CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons via CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+    <!-- CSS local -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="bg-light">
+
+    <div class="container">
+        <div class="row justify-content-center align-items-center min-vh-100">
+            <div class="col-md-5 col-lg-4">
+
+                <!-- Card de Login -->
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4 p-md-5">
+
+                        <!-- Logo e Titulo -->
+                        <div class="text-center mb-4">
+                            <img src="{% static 'img/logo.png' %}" alt="Logo" width="64" height="64" class="mb-2">
+                            <h4 class="fw-bold text-primary mb-0">Gerenciador de Tarefas</h4>
+                            <p class="text-muted small">Entre com suas credenciais</p>
+                        </div>
+
+                        <!-- Mensagens do Django -->
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <!-- Formulario de Login -->
+                        <form method="POST" action="">
+                            {% csrf_token %}
+
+                            <!-- Usuario -->
+                            <div class="mb-3">
+                                <label for="username" class="form-label fw-semibold">
+                                    <i class="bi bi-person"></i> Usuario
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-person-fill"></i>
+                                    </span>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="username"
+                                        name="username"
+                                        placeholder="Digite seu usuario"
+                                        required
+                                        autofocus
+                                    >
+                                </div>
+                            </div>
+
+                            <!-- Senha -->
+                            <div class="mb-3">
+                                <label for="password" class="form-label fw-semibold">
+                                    <i class="bi bi-lock"></i> Senha
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-lock-fill"></i>
+                                    </span>
+                                    <input
+                                        type="password"
+                                        class="form-control"
+                                        id="password"
+                                        name="password"
+                                        placeholder="Digite sua senha"
+                                        required
+                                    >
+                                    <button class="btn btn-outline-secondary" type="button" id="btnVerSenha">
+                                        <i class="bi bi-eye" id="iconeOlho"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Lembrar-me -->
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="lembrar" name="lembrar">
+                                    <label class="form-check-label small" for="lembrar">
+                                        Lembrar de mim
+                                    </label>
+                                </div>
+
+                            <!-- Botao Entrar -->
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-box-arrow-in-right"></i> Entrar
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Divisor -->
+                        <hr class="my-4">
+
+                        <!-- Link de Cadastro -->
+                        <div class="text-center">
+                            <p class="text-muted small mb-0">
+                                Nao tem conta?
+                                <a href="" class="text-decoration-none fw-semibold">
+                                    Cadastre-se
+                                </a>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Rodape -->
+                <p class="text-center text-muted small mt-3">
+                    Sistema de Gerenciamento de Tarefas - Projeto Didatico PDS 2026
+                </p>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JavaScript local -->
+    <script src="{% static 'js/script.js' %}"></script>
+
+    <!-- Mostrar/Ocultar senha -->
+    <script>
+        document.getElementById('btnVerSenha').addEventListener('click', function () {
+            const input = document.getElementById('password');
+            const icone = document.getElementById('iconeOlho');
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icone.classList.remove('bi-eye');
+                icone.classList.add('bi-eye-slash');
+            } else {
+                input.type = 'password';
+                icone.classList.remove('bi-eye-slash');
+                icone.classList.add('bi-eye');
+            }
+        });
+    </script>
+
+</body>
+</html>
