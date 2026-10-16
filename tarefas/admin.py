@@ -7,3 +7,5 @@ admin.site.register(Categoria)
 
 # Register your models here.
 admin.site.register(Tarefa)
+
+admin.site.register(Perfil)

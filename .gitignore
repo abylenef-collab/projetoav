@@ -139,6 +139,10 @@ venv/
 AMBIENTE/
 env.bak/
 venv.bak/
+venv/
+__pycache__/
+.env
+db.sqlite3
 
 # Configurações do projeto Spyder
 .spyderproject

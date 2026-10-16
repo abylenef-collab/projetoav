@@ -1,0 +1,201 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Gerenciador de Tarefas</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <script src="{% static 'js/tema.js' %}"></script>
+
+    <style>
+        .card-container { max-width: 640px; margin: 40px auto; }
+    </style>
+</head>
+<body class="bg-body-tertiary">
+
+    <button id="btn-tema" type="button" class="tema-switch" aria-label="Alternar tema claro/escuro">
+        <span class="tema-knob">
+            <i class="bi bi-sun-fill icone-sol"></i>
+            <i class="bi bi-moon-stars-fill icone-lua"></i>
+        </span>
+    </button>
+
+    <div class="container card-container">
+
+        <div class="card shadow p-4 border-0 rounded-4">
+
+            <div class="text-center mb-4">
+                <img src="{% static 'img/logo.png' %}" alt="Logo" width="64" height="64" class="mb-2">
+                <h4 class="fw-bold text-primary mb-0">Criar conta</h4>
+                <p class="text-muted small mb-0">Preencha os dados para se cadastrar</p>
+                <p class="text-muted small">Campos com <span class="text-danger">*</span> são obrigatórios</p>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger small">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                <!-- DADOS PESSOAIS -->
+                <h6 class="fw-bold text-secondary border-bottom pb-2 mb-3">
+                    <i class="bi bi-person-vcard"></i> Dados pessoais
+                </h6>
+                <div class="row g-3 mb-4">
+                    <div class="col-12">
+                        <label for="id_nome_completo" class="form-label fw-semibold">Nome completo <span class="text-danger">*</span></label>
+                        {{ form.nome_completo }}
+                        {% for e in form.nome_completo.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="id_email" class="form-label fw-semibold">E-mail <span class="text-danger">*</span></label>
+                        {{ form.email }}
+                        {% for e in form.email.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="id_telefone" class="form-label fw-semibold">Telefone <span class="text-danger">*</span></label>
+                        {{ form.telefone }}
+                        {% for e in form.telefone.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="id_cpf" class="form-label fw-semibold">CPF <span class="text-danger">*</span></label>
+                        {{ form.cpf }}
+                        {% for e in form.cpf.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="id_data_nascimento" class="form-label fw-semibold">Data de nascimento <span class="text-danger">*</span></label>
+                        {{ form.data_nascimento }}
+                        {% for e in form.data_nascimento.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+                    </div>
+                </div>
+
+                <!-- ENDEREÇO -->
+                <h6 class="fw-bold text-secondary border-bottom pb-2 mb-3">
+                    <i class="bi bi-geo-alt"></i> Endereço
+                </h6>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-9">
+                        <label for="id_rua" class="form-label fw-semibold">Rua <span class="text-danger">*</span></label>
+                        {{ form.rua }}
+                        {% for e in form.rua.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+                    </div>
+                    <div class="col-md-3">
+                        <label for="id_numero" class="form-label fw-semibold">Número <span class="text-danger">*</span></label>
+                        {{ form.numero }}
+                        {% for e in form.numero.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+                    </div>
+                    <div class="col-md-4">
+                        <label for="id_cep" class="form-label fw-semibold">CEP <span class="text-danger">*</span></label>
+                        {{ form.cep }}
+                        {% for e in form.cep.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+                    </div>
+                    <div class="col-md-4">
+                        <label for="id_bairro" class="form-label fw-semibold">Bairro <span class="text-danger">*</span></label>
+                        {{ form.bairro }}
+                        {% for e in form.bairro.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+                    </div>
+                    <div class="col-md-4">
+                        <label for="id_cidade" class="form-label fw-semibold">Cidade <span class="text-danger">*</span></label>
+                        {{ form.cidade }}
+                        {% for e in form.cidade.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+                    </div>
+                </div>
+
+                <!-- DADOS DE ACESSO -->
+                <h6 class="fw-bold text-secondary border-bottom pb-2 mb-3">
+                    <i class="bi bi-shield-lock"></i> Dados de acesso
+                </h6>
+                <div class="row g-3 mb-3">
+                    <div class="col-12">
+                        <label for="id_username" class="form-label fw-semibold">Usuário <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                            {{ form.username }}
+                        </div>
+                        {% for e in form.username.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="id_password1" class="form-label fw-semibold">Senha <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                            {{ form.password1 }}
+                            <button class="btn btn-outline-secondary" type="button" onclick="toggleSenha('id_password1', this)">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        {% for e in form.password1.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+                        <div class="form-text">Mínimo de 8 caracteres, não só números.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="id_password2" class="form-label fw-semibold">Confirmar senha <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                            {{ form.password2 }}
+                            <button class="btn btn-outline-secondary" type="button" onclick="toggleSenha('id_password2', this)">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        {% for e in form.password2.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 mt-3">
+                    <i class="bi bi-person-plus"></i> Cadastrar
+                </button>
+            </form>
+
+            <hr class="my-4">
+            <p class="text-center small text-muted mb-0">
+                Já tem conta? <a href="{% url 'index' %}" class="fw-bold text-decoration-none">Entrar</a>
+            </p>
+        </div>
+
+        <p class="text-center text-muted small mt-3">
+            Sistema de Gerenciamento de Tarefas - Projeto Didatico PDS 2026
+        </p>
+    </div>
+
+    <script>
+        function toggleSenha(id, botao) {
+            const campo = document.getElementById(id);
+            const icone = botao.querySelector('i');
+            if (campo.type === 'password') {
+                campo.type = 'text';
+                icone.className = 'bi bi-eye-slash';
+            } else {
+                campo.type = 'password';
+                icone.className = 'bi bi-eye';
+            }
+        }
+
+        // Máscaras de digitação (CPF, telefone e CEP)
+        const soNum = v => v.replace(/\D/g, '');
+
+        function mascara(id, formatar) {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('input', () => { el.value = formatar(el.value); });
+        }
+
+        mascara('id_cpf', v => soNum(v).slice(0, 11)
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d)/, '$1.$2')
+            .replace(/(\d{3})(\d{1,2})$/, '$1-$2'));
+
+        mascara('id_telefone', v => {
+            v = soNum(v).slice(0, 11);
+            if (v.length > 10) return v.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+            if (v.length > 6)  return v.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3');
+            if (v.length > 2)  return v.replace(/(\d{2})(\d*)/, '($1) $2');
+            return v;
+        });
+
+        mascara('id_cep', v => soNum(v).slice(0, 8).replace(/(\d{5})(\d)/, '$1-$2'));
+    </script>
+</body>
+</html>

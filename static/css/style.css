@@ -189,3 +189,102 @@ footer .bi {
 ::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
 }
+
+/* Faz as classes "claras" do Bootstrap acompanharem o tema */
+.bg-light,
+.bg-white {
+    background-color: var(--bs-body-bg) !important;
+}
+
+.text-dark {
+    color: var(--bs-body-color) !important;
+}
+
+/* ===== Interruptor de tema (sol/lua) ===== */
+.tema-switch {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 1030;
+    width: 68px;
+    height: 34px;
+    padding: 0;
+    border-radius: 34px;
+    cursor: pointer;
+    border: 3px solid transparent;
+    /* fundo da cor do tema + borda com degradê */
+    background:
+        linear-gradient(var(--bs-body-bg), var(--bs-body-bg)) padding-box,
+        linear-gradient(90deg, #ff9a3c, #c2478a) border-box;
+    transition: background 0.3s;
+}
+
+/* Bolinha */
+.tema-knob {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 15px;
+    background: linear-gradient(135deg, #ffb347, #ff6a3d);
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+/* Ícones: sol no claro, lua no escuro */
+.tema-knob .icone-lua { display: none; }
+
+/* ---- Tema escuro ---- */
+[data-bs-theme="dark"] .tema-switch {
+    background:
+        linear-gradient(var(--bs-body-bg), var(--bs-body-bg)) padding-box,
+        linear-gradient(90deg, #00c6ff, #2563eb) border-box;
+}
+
+[data-bs-theme="dark"] .tema-knob {
+    transform: translateX(34px);
+    background: linear-gradient(135deg, #00c6ff, #2563eb);
+}
+
+[data-bs-theme="dark"] .tema-knob .icone-sol { display: none; }
+[data-bs-theme="dark"] .tema-knob .icone-lua { display: inline; }
+
+/* ===== Transição suave entre telas ===== */
+@keyframes entrar-tela {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Conteúdo aparece com fade ao carregar a página */
+.container {
+    animation: entrar-tela 0.4s ease both;
+}
+
+/* Conteúdo some com fade ao clicar num link */
+.container {
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+body.saindo .container {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+/* Quem prefere menos animação não vê o efeito */
+@media (prefers-reduced-motion: reduce) {
+    .container {
+        animation: none;
+        transition: none;
+    }
+}
