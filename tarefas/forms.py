@@ -1,36 +1,36 @@
 import re
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
+
 from .models import Perfil
 
 
 def so_numeros(valor):
+    """Remove tudo que não for número (usado em CPF, telefone e CEP)."""
     return re.sub(r'\D', '', valor)
 
 
-class CadastroForm(UserCreationForm):
-    # Todos os campos abaixo são obrigatórios por padrão (required=True)
-    nome_completo = forms.CharField(max_length=150)
-    email = forms.EmailField()
-    telefone = forms.CharField(max_length=15)
-    cpf = forms.CharField(max_length=14)
+class CadastroForms(forms.Form):  # formulário da tela de criação de conta
+    nome = forms.CharField(label='Nome completo', max_length=150)
+    email = forms.EmailField(label='E-mail', max_length=150)
+    telefone = forms.CharField(label='Telefone', max_length=15)
+    cpf = forms.CharField(label='CPF', max_length=14)
     data_nascimento = forms.DateField(
-        widget=forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d')
+        label='Data de nascimento',
+        widget=forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'),
     )
-    rua = forms.CharField(max_length=150)
-    numero = forms.CharField(max_length=10)
-    cep = forms.CharField(max_length=9)
-    bairro = forms.CharField(max_length=100)
-    cidade = forms.CharField(max_length=100)
-
-    class Meta(UserCreationForm.Meta):
-        model = User
-        fields = ('username',)
+    rua = forms.CharField(label='Rua', max_length=150)
+    numero = forms.CharField(label='Número', max_length=10)
+    cep = forms.CharField(label='CEP', max_length=9)
+    bairro = forms.CharField(label='Bairro', max_length=100)
+    cidade = forms.CharField(label='Cidade', max_length=100)
+    senha = forms.CharField(label='Senha', widget=forms.PasswordInput)
+    confirmar_senha = forms.CharField(label='Confirmar senha', widget=forms.PasswordInput)
 
     PLACEHOLDERS = {
-        'nome_completo': 'Digite seu nome completo',
-        'email': 'seuemail@exemplo.com',
+        'nome': 'Digite seu nome completo',
+        'email': 'Digite seu e-mail',
         'telefone': '(00) 00000-0000',
         'cpf': '000.000.000-00',
         'rua': 'Nome da rua',
@@ -38,17 +38,23 @@ class CadastroForm(UserCreationForm):
         'cep': '00000-000',
         'bairro': 'Bairro',
         'cidade': 'Cidade',
-        'username': 'Escolha um usuário',
-        'password1': 'Crie uma senha',
-        'password2': 'Repita a senha',
+        'senha': 'Crie uma senha',
+        'confirmar_senha': 'Digite a senha novamente',
     }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for nome, campo in self.fields.items():
+        for chave, campo in self.fields.items():
             campo.widget.attrs['class'] = 'form-control'
-            if nome in self.PLACEHOLDERS:
-                campo.widget.attrs['placeholder'] = self.PLACEHOLDERS[nome]
+            if chave in self.PLACEHOLDERS:
+                campo.widget.attrs['placeholder'] = self.PLACEHOLDERS[chave]
+
+    def clean_email(self):
+        email = self.cleaned_data['email'].lower()
+        # o e-mail vai ser o username, então não pode repetir
+        if User.objects.filter(username__iexact=email).exists():
+            raise forms.ValidationError('Este e-mail já está cadastrado.')
+        return email
 
     def clean_cpf(self):
         cpf = so_numeros(self.cleaned_data['cpf'])
@@ -70,21 +76,18 @@ class CadastroForm(UserCreationForm):
             raise forms.ValidationError('O CEP deve ter 8 números.')
         return cep
 
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        user.first_name = self.cleaned_data['nome_completo']
-        user.email = self.cleaned_data['email']
-        if commit:
-            user.save()
-            Perfil.objects.create(
-                usuario=user,
-                telefone=self.cleaned_data['telefone'],
-                cpf=self.cleaned_data['cpf'],
-                data_nascimento=self.cleaned_data['data_nascimento'],
-                rua=self.cleaned_data['rua'],
-                numero=self.cleaned_data['numero'],
-                cep=self.cleaned_data['cep'],
-                bairro=self.cleaned_data['bairro'],
-                cidade=self.cleaned_data['cidade'],
-            )
-        return user
+    def clean(self):
+        cleaned_data = super().clean()
+        senha = cleaned_data.get('senha')
+        confirmar_senha = cleaned_data.get('confirmar_senha')
+
+        if senha and confirmar_senha and senha != confirmar_senha:
+            self.add_error('confirmar_senha', 'As senhas não coincidem.')
+        elif senha:
+            # mantém as regras de senha do Django (mínimo 8, não só números...)
+            try:
+                validate_password(senha)
+            except forms.ValidationError as erro:
+                self.add_error('senha', erro)
+
+        return cleaned_data
