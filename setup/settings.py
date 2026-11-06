@@ -132,3 +132,13 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+from django.contrib.messages import constants as messages_constants
+
+# Onde o Django manda quem tentou abrir uma página protegida sem estar logado
+LOGIN_URL = 'login'
+
+# Faz as mensagens de erro usarem a cor vermelha do Bootstrap (alert-danger)
+MESSAGE_TAGS = {
+    messages_constants.ERROR: 'danger',
+}
